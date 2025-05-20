@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitUp - Activity</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container" style="background-color: #4a5d80; padding: 16px;">
+    <div class="status-bar">
+      <div>9:41</div>
+      <div class="status-bar-icons">
+        <div>●●●</div>
+        <div>📶</div>
+        <div class="battery-icon"></div>
+      </div>
+    </div>
+
+    <div class="header">
+      <h1 class="logo">FitUp</h1>
+      <a href="profile.html" class="profile-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </a>
+    </div>
+
+    <div>
+      <div class="level-indicator">LEVEL</div>
+      <div class="progress-bar">
+        <div class="progress-bar-inner"></div>
+      </div>
+    </div>
+
+    <div class="weekday-tabs">
+      <button class="weekday-tab">
+        <span class="weekday-day">Mon</span>
+        <span class="weekday-date">20</span>
+      </button>
+      <button class="weekday-tab">
+        <span class="weekday-day">Tues</span>
+        <span class="weekday-date">21</span>
+      </button>
+      <button class="weekday-tab active">
+        <span class="weekday-day">Wed</span>
+        <span class="weekday-date">22</span>
+      </button>
+      <button class="weekday-tab">
+        <span class="weekday-day">Thu</span>
+        <span class="weekday-date">23</span>
+      </button>
+      <button class="weekday-tab">
+        <span class="weekday-day">Fri</span>
+        <span class="weekday-date">24</span>
+      </button>
+      <button class="weekday-tab">
+        <span class="weekday-day">Sat</span>
+        <span class="weekday-date">25</span>
+      </button>
+    </div>
+
+    <div class="timer" id="timer">ZEIT 00:00</div>
+
+    <a href="activity-complete.html" class="big-button">
+      <div class="big-button-inner">Stop</div>
+    </a>
+
+    <div class="button">Aktivität läuft</div>
+  </div>
+
+  <script>
+    // Timer functionality
+    let seconds = 0;
+    const timerElement = document.getElementById('timer');
+    
+    const timer = setInterval(() => {
+      seconds++;
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      const formattedTime = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+      timerElement.textContent = `ZEIT ${formattedTime}`;
+    }, 1000);
+
+    // Add active class to the clicked weekday tab
+    const weekdayTabs = document.querySelectorAll('.weekday-tab');
+    weekdayTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        weekdayTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

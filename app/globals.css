@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #1e293b;
+  --foreground: #ffffff;
+  --primary: #64748b;
+  --primary-foreground: #ffffff;
+  --secondary: #475569;
+  --secondary-foreground: #ffffff;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+  --card: #1e293b;
+  --card-foreground: #ffffff;
+  --border: #334155;
+  --input: #334155;
+  --ring: #3b82f6;
+}
+
+body {
+  @apply bg-background text-foreground;
+}
+
+.app-container {
+  @apply max-w-md mx-auto min-h-screen flex flex-col;
+}
+
+.weekday-tabs {
+  @apply grid grid-cols-6 gap-1 my-4;
+}
+
+.weekday-tab {
+  @apply flex flex-col items-center justify-center p-2 rounded-md bg-secondary text-white;
+}
+
+.weekday-tab.active {
+  @apply bg-red-500;
+}
+
+.big-button {
+  @apply w-48 h-48 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto my-8 relative;
+  background-color: rgba(59, 89, 152, 0.3);
+  border: 12px solid rgba(59, 89, 152, 0.5);
+}
+
+.big-button-inner {
+  @apply w-32 h-32 rounded-full flex items-center justify-center bg-primary;
+}
+
+.progress-bar {
+  @apply h-4 rounded-full overflow-hidden my-4;
+  background-color: #1e293b;
+}
+
+.progress-bar-inner {
+  @apply h-full bg-pink-200;
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitUp - Calendar</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container" style="background-color: #4a5d80; padding: 16px;">
+    <div class="status-bar">
+      <div>9:41</div>
+      <div class="status-bar-icons">
+        <div>●●●</div>
+        <div>📶</div>
+        <div class="battery-icon"></div>
+      </div>
+    </div>
+
+    <div class="header">
+      <h1 class="logo">FitUp</h1>
+      <a href="profile.html" class="profile-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </a>
+    </div>
+
+    <div class="weekday-tabs">
+      <button class="weekday-tab">
+        <span class="weekday-day">Mon</span>
+        <span class="weekday-date">20</span>
+      </button>
+      <button class="weekday-tab">
+        <span class="weekday-day">Tues</span>
+        <span class="weekday-date">21</span>
+      </button>
+      <button class="weekday-tab active">
+        <span class="weekday-day">Wed</span>
+        <span class="weekday-date">22</span>
+      </button>
+      <button class="weekday-tab">
+        <span class="weekday-day">Thu</span>
+        <span class="weekday-date">23</span>
+      </button>
+      <button class="weekday-tab">
+        <span class="weekday-day">Fri</span>
+        <span class="weekday-date">24</span>
+      </button>
+      <button class="weekday-tab">
+        <span class="weekday-day">Sat</span>
+        <span class="weekday-date">25</span>
+      </button>
+    </div>
+
+    <div class="activity-list">
+      <div class="activity-item">
+        <div class="activity-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <circle cx="5.5" cy="17.5" r="3.5" />
+            <circle cx="18.5" cy="17.5" r="3.5" />
+            <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+            <path d="M12 17.5V14l-3-5 5-1 3 3.5" />
+          </svg>
+        </div>
+        <div class="activity-details">
+          <div class="activity-title">Radfahrt am Morgen</div>
+          <div class="activity-info">45 Kilometer / 458 Höhenmeter</div>
+          <div class="activity-info">3h 37min</div>
+          <div class="activity-info">Score: 45</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M6.5 6.5h11v11h-11z" />
+            <path d="M20.5 9.5h2v5h-2z" />
+            <path d="M1.5 9.5h2v5h-2z" />
+            <path d="M3.5 12h17" />
+          </svg>
+        </div>
+        <div class="activity-details">
+          <div class="activity-title">Krafttraining am Nachmittag</div>
+          <div class="activity-info">34 min</div>
+          <div class="activity-info">Score: 8</div>
+        </div>
+      </div>
+    </div>
+
+    <a href="start.html" class="button" style="margin-top: 24px;">zurück</a>
+  </div>
+
+  <script>
+    // Add active class to the clicked weekday tab
+    const weekdayTabs = document.querySelectorAll('.weekday-tab');
+    weekdayTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        weekdayTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
