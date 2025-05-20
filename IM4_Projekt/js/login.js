@@ -10,9 +10,9 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       method: "POST",
       // credentials: 'include', // uncomment if front-end & back-end are on different domains
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ email, password }),
+      body: new URLSearchParams({ email, password, user_name }),
     });
-    const result = await response.json();
+    const result = await response.json(); 
 
     if (result.status === "success") {
       alert("Login successful!");
