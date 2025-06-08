@@ -18,7 +18,7 @@
 
     <h1 class="logo">FitUp</h1>
 
-    <div class="level-indicator">LEVEL</div>
+    <div class="level-indicator" id="levelIndicator">Level wird geladen...</div>
     <div class="progress-bar">
       <div class="progress-bar-inner" id="progressBar"></div>
     </div>
@@ -52,12 +52,13 @@
     const startBtn = document.getElementById("startButton");
     const startText = document.getElementById("startButtonText");
 
-    // Sportart aus localStorage holen
+    // Sportart anzeigen
     const sport = localStorage.getItem("selectedSport");
     if (sport) {
       selectedSport.textContent = "Sportart: " + sport;
     }
 
+    // Start/Stop Button
     startBtn.addEventListener("click", () => {
       if (!isRunning) {
         startText.textContent = "STOP";
@@ -76,7 +77,7 @@
       }
     });
 
-    // Weekday aktiv setzen
+    // Wochentags-Tabs
     const weekdayTabs = document.querySelectorAll('.weekday-tab');
     weekdayTabs.forEach(tab => {
       tab.addEventListener('click', () => {
@@ -84,6 +85,18 @@
         tab.classList.add('active');
       });
     });
+
+    // ✅ Level dynamisch laden
+    fetch("api/get-level.php")
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          document.getElementById("levelIndicator").textContent = "Level: " + data.level;
+        }
+      })
+      .catch(err => {
+        console.error("Fehler beim Laden des Levels:", err);
+      });
   </script>
 </body>
 </html>

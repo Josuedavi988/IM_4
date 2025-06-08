@@ -27,5 +27,36 @@
 
     <a href="calendar.html" class="button" style="width: 192px; margin-top: 32px;">beenden</a>
   </div>
+
+  <script>
+    // Daten aus localStorage holen
+    const sport = localStorage.getItem("selectedSport") || "Unbekannt";
+    const timeString = localStorage.getItem("timerResult") || "ZEIT 00:00";
+
+    // Zeit in Sekunden umwandeln (von z.B. ZEIT 03:21)
+    const parts = timeString.split(" ")[1].split(":");
+    const durationInSeconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+
+    // Einfaches Level-System: 1 Punkt pro 10 Sekunden
+    const level = Math.floor(durationInSeconds / 10);
+
+    // API-Aufruf zum Speichern
+    fetch("api/save-activity.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        type: sport,
+        duration: durationInSeconds,
+        level: level
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log("Aktivität gespeichert:", data);
+    })
+    .catch(err => {
+      console.error("Fehler beim Speichern der Aktivität:", err);
+    });
+  </script>
 </body>
 </html>

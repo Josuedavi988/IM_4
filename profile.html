@@ -36,9 +36,34 @@
 
       <a href="start.html" class="button">zurück</a>
 
-      <a href="profile-delete.html" class="button button-primary">Profil löschen</a>
+      <a href="#" onclick="deleteUser()" class="button button-primary">Profil löschen</a>
 
     </div>
   </div>
+
+  <script>
+    async function deleteUser() {
+      const confirmed = confirm("Willst du dein Konto wirklich löschen?");
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch("system/api/delete-user.php", {
+          method: "POST",
+          credentials: "include"
+        });
+        const data = await res.json();
+
+        if (data.status === "success") {
+          alert("Dein Account wurde gelöscht.");
+          window.location.href = "login.html";
+        } else {
+          alert(data.message || "Fehler beim Löschen.");
+        }
+      } catch (err) {
+        console.error("Fehler beim Löschen:", err);
+        alert("Verbindungsfehler");
+      }
+    }
+  </script>
 </body>
 </html>

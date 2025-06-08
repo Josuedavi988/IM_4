@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FitUp – Register</title>
+  <title>FitUp – Registrierung</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -18,17 +18,47 @@
           <input type="email" class="form-input" id="email" placeholder="Email" required />
         </div>
         <div class="form-group">
-          <input type="password" class="form-input" id="password" placeholder="Password" required />
+          <input type="password" class="form-input" id="password" placeholder="Passwort" required />
         </div>
-        <button type="submit" class="button button-primary">Sign up</button>
+        <button type="submit" class="button button-primary">Registrieren</button>
       </form>
-      <a href="login.html" class="auth-link">Already have an account? Log in</a>
+      <a href="login.html" class="auth-link">Du hast schon ein Konto? Jetzt einloggen</a>
     </div>
   </div>
+
   <script>
-    document.getElementById("registerForm").addEventListener("submit", function(e) {
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      window.location.href = "start.html";
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      try {
+        const response = await fetch("api/register.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            name,
+            email,
+            password
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+          alert("Registrierung erfolgreich!");
+          window.location.href = "login.html";
+        } else {
+          alert(result.message || "Registrierung fehlgeschlagen.");
+        }
+      } catch (error) {
+        console.error("Fehler:", error);
+        alert("Ein unerwarteter Fehler ist aufgetreten.");
+      }
     });
   </script>
 </body>
