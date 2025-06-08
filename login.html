@@ -1,53 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FitUp - Login</title>
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FitUp – Login</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="auth-container">
-    <div class="status-bar">
-      <div>9:41</div>
-      <div class="status-bar-icons">
-        <div>●●●</div>
-        <div>📶</div>
-        <div class="battery-icon"></div>
-      </div>
-    </div>
-
-    <div class="auth-content">
+  <div class="container center-content">
+    <div class="auth-box">
       <h1 class="logo">FitUp</h1>
-
-      <!-- ✅ Formular mit allen IDs wie im JS erwartet -->
       <form id="loginForm" class="auth-form">
         <div class="form-group">
-          <input type="text" class="form-input" id="user_name" placeholder="Username" required>
+          <input type="email" class="form-input" id="email" placeholder="Email" required />
         </div>
         <div class="form-group">
-          <input type="email" class="form-input" id="email" placeholder="Email" required>
-        </div>
-        <div class="form-group">
-          <input type="password" class="form-input" id="password" placeholder="Password" required>
+          <input type="password" class="form-input" id="password" placeholder="Password" required />
         </div>
         <button type="submit" class="button button-primary">Sign in</button>
       </form>
-
-      <div class="auth-divider">OR</div>
-      
-      <div class="social-buttons">
-        <button class="social-button">Facebook</button>
-        <span>|</span>
-        <button class="social-button">Google</button>
-      </div>
-
       <a href="register.html" class="auth-link">Don't have an account? Sign up</a>
     </div>
   </div>
-
-  <!-- ✅ JS wird eingebunden -->
   <script src="js/login.js"></script>
 </body>
 </html>

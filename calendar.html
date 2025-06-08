@@ -1,23 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FitUp - Calendar</title>
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FitUp – Kalender</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div class="container" style="background-color: #4a5d80; padding: 16px;">
-    <div class="status-bar">
-      <div>9:41</div>
-      <div class="status-bar-icons">
-        <div>●●●</div>
-        <div>📶</div>
-        <div class="battery-icon"></div>
-      </div>
-    </div>
-
+    
     <div class="header">
       <h1 class="logo">FitUp</h1>
       <a href="profile.html" class="profile-icon">
@@ -29,30 +21,12 @@
     </div>
 
     <div class="weekday-tabs">
-      <button class="weekday-tab">
-        <span class="weekday-day">Mon</span>
-        <span class="weekday-date">20</span>
-      </button>
-      <button class="weekday-tab">
-        <span class="weekday-day">Tues</span>
-        <span class="weekday-date">21</span>
-      </button>
-      <button class="weekday-tab active">
-        <span class="weekday-day">Wed</span>
-        <span class="weekday-date">22</span>
-      </button>
-      <button class="weekday-tab">
-        <span class="weekday-day">Thu</span>
-        <span class="weekday-date">23</span>
-      </button>
-      <button class="weekday-tab">
-        <span class="weekday-day">Fri</span>
-        <span class="weekday-date">24</span>
-      </button>
-      <button class="weekday-tab">
-        <span class="weekday-day">Sat</span>
-        <span class="weekday-date">25</span>
-      </button>
+      <button class="weekday-tab"><span class="weekday-day">Mon</span><span class="weekday-date">20</span></button>
+      <button class="weekday-tab"><span class="weekday-day">Tues</span><span class="weekday-date">21</span></button>
+      <button class="weekday-tab active"><span class="weekday-day">Wed</span><span class="weekday-date">22</span></button>
+      <button class="weekday-tab"><span class="weekday-day">Thu</span><span class="weekday-date">23</span></button>
+      <button class="weekday-tab"><span class="weekday-day">Fri</span><span class="weekday-date">24</span></button>
+      <button class="weekday-tab"><span class="weekday-day">Sat</span><span class="weekday-date">25</span></button>
     </div>
 
     <div class="activity-list">
@@ -93,7 +67,6 @@
   </div>
 
   <script>
-    // Add active class to the clicked weekday tab
     const weekdayTabs = document.querySelectorAll('.weekday-tab');
     weekdayTabs.forEach(tab => {
       tab.addEventListener('click', () => {
