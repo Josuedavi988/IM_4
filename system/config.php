@@ -1,17 +1,16 @@
 <?php
-// config.php
 $host = 'un0kfk.myd.infomaniak.com';
-$db   = 'un0kfk_im4cv';  // Change to your DB name
-$user = 'un0kfk_im4';   // Change to your DB user
-$pass = 'IM4_Passwort!';       // Change to your DB pass if needed
+$db   = 'un0kfk_im4cv';
+$user = 'un0kfk_im4';
+$pass = 'IM4_Passwort!';
 
 try {
     $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
     $pdo = new PDO($dsn, $user, $pass);
-    // Optional: Set error mode
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (Exception $e) {
-    echo "Database connection error: " . $e->getMessage();
+    http_response_code(500);
+    echo json_encode(["status" => "error", "message" => "Database connection error"]);
     exit;
 }
 ?>

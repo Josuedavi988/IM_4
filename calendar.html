@@ -9,7 +9,10 @@
 </head>
 <body>
   <div class="container" style="background-color: #4a5d80; padding: 16px;">
-    
+
+    <!-- Fortschrittsbalken ganz oben -->
+    <div id="level-progress-bar" style="margin-bottom: 24px;"></div>
+
     <div class="header">
       <h1 class="logo">FitUp</h1>
       <a href="profile.html" class="profile-icon">
@@ -20,60 +23,143 @@
       </a>
     </div>
 
-    <div class="weekday-tabs">
-      <button class="weekday-tab"><span class="weekday-day">Mon</span><span class="weekday-date">20</span></button>
-      <button class="weekday-tab"><span class="weekday-day">Tues</span><span class="weekday-date">21</span></button>
-      <button class="weekday-tab active"><span class="weekday-day">Wed</span><span class="weekday-date">22</span></button>
-      <button class="weekday-tab"><span class="weekday-day">Thu</span><span class="weekday-date">23</span></button>
-      <button class="weekday-tab"><span class="weekday-day">Fri</span><span class="weekday-date">24</span></button>
-      <button class="weekday-tab"><span class="weekday-day">Sat</span><span class="weekday-date">25</span></button>
-    </div>
-
-    <div class="activity-list">
-      <div class="activity-item">
-        <div class="activity-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-            <circle cx="5.5" cy="17.5" r="3.5" />
-            <circle cx="18.5" cy="17.5" r="3.5" />
-            <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-            <path d="M12 17.5V14l-3-5 5-1 3 3.5" />
-          </svg>
-        </div>
-        <div class="activity-details">
-          <div class="activity-title">Radfahrt am Morgen</div>
-          <div class="activity-info">45 Kilometer / 458 Höhenmeter</div>
-          <div class="activity-info">3h 37min</div>
-          <div class="activity-info">Score: 45</div>
-        </div>
-      </div>
-      <div class="activity-item">
-        <div class="activity-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-            <path d="M6.5 6.5h11v11h-11z" />
-            <path d="M20.5 9.5h2v5h-2z" />
-            <path d="M1.5 9.5h2v5h-2z" />
-            <path d="M3.5 12h17" />
-          </svg>
-        </div>
-        <div class="activity-details">
-          <div class="activity-title">Krafttraining am Nachmittag</div>
-          <div class="activity-info">34 min</div>
-          <div class="activity-info">Score: 8</div>
-        </div>
-      </div>
-    </div>
-
+    <div class="weekday-tabs" id="weekdayTabs"></div>
+    <div class="activity-list" id="activityList"></div>
     <a href="start.html" class="button" style="margin-top: 24px;">zurück</a>
   </div>
 
   <script>
-    const weekdayTabs = document.querySelectorAll('.weekday-tab');
-    weekdayTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        weekdayTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+    const weekdayTabs = document.getElementById("weekdayTabs");
+    const activityList = document.getElementById("activityList");
+    const progressBarDiv = document.getElementById("level-progress-bar");
+
+    // Heute + 5 Tage
+    const days = [];
+    const today = new Date();
+    for (let i = 0; i < 6; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      days.push(date);
+    }
+
+    let selectedDate = days[0].toISOString().split("T")[0];
+
+    function renderTabs() {
+      weekdayTabs.innerHTML = "";
+      days.forEach((date, index) => {
+        const dayName = date.toLocaleDateString("de-CH", { weekday: "short" });
+        const dayNumber = date.getDate();
+        const dateString = date.toISOString().split("T")[0];
+
+        const btn = document.createElement("button");
+        btn.className = "weekday-tab" + (index === 0 ? " active" : "");
+        btn.innerHTML = `<span class="weekday-day">${dayName}</span><span class="weekday-date">${dayNumber}</span>`;
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".weekday-tab").forEach(t => t.classList.remove("active"));
+          btn.classList.add("active");
+          selectedDate = dateString;
+          renderActivities();
+        });
+        weekdayTabs.appendChild(btn);
       });
-    });
+    }
+
+    let activitiesByDate = {};
+
+    function renderActivities() {
+      activityList.innerHTML = "";
+      const activities = activitiesByDate[selectedDate] || [];
+      if (activities.length === 0) {
+        activityList.innerHTML = "<p style='color: white; text-align: center;'>Keine Aktivitäten</p>";
+        return;
+      }
+
+      activities.forEach(activity => {
+        const minuten = Math.floor(activity.duration / 60);
+        const sekunden = activity.duration % 60;
+        const score = Math.floor(activity.duration / 10);
+
+        const div = document.createElement("div");
+        div.className = "activity-item";
+        div.style.display = "flex";
+        div.style.alignItems = "center";
+        div.style.backgroundColor = "#334155";
+        div.style.borderRadius = "12px";
+        div.style.padding = "12px";
+        div.style.marginBottom = "12px";
+        div.style.color = "white";
+
+        div.innerHTML = `
+          <div class="activity-icon" style="margin-right: 12px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 6v6l4 2" />
+            </svg>
+          </div>
+          <div class="activity-details">
+            <div class="activity-title" style="font-weight: bold;">${activity.type}</div>
+            <div class="activity-info">${minuten} min ${sekunden} sek</div>
+            <div class="activity-info">Score: ${score}</div>
+          </div>
+        `;
+        activityList.appendChild(div);
+      });
+    }
+
+    function berechneLevelFortschritt(totalSeconds) {
+      let level = 0;
+      let requiredScore = 360; // 360 Sekunden = Score 36
+      let nextLevelScore = 360;
+      let totalScore = Math.floor(totalSeconds / 10);
+
+      while (totalScore >= requiredScore) {
+        level++;
+        nextLevelScore = Math.floor(nextLevelScore * 1.5);
+        requiredScore += nextLevelScore;
+      }
+
+      const restScore = totalScore - (requiredScore - nextLevelScore);
+      const progress = Math.floor((restScore / nextLevelScore) * 100);
+      const fehltScore = nextLevelScore - restScore;
+
+      return {
+        level,
+        progress,
+        fehltScore,
+        totalScore
+      };
+    }
+
+    function zeigeFortschrittBalken(fortschritt) {
+      progressBarDiv.innerHTML = `
+        <div style="color: white; font-weight: bold; text-align: center;">Level: ${fortschritt.level}</div>
+        <div style="color: white; text-align: center;">Noch ${fortschritt.fehltScore} Punkte bis Level ${fortschritt.level + 1}</div>
+        <div style="background: #334155; height: 12px; border-radius: 6px; margin: 8px 24px; overflow: hidden;">
+          <div style="height: 100%; width: ${fortschritt.progress}%; background: #38bdf8;"></div>
+        </div>
+      `;
+    }
+
+    fetch("system/api/get-activities.php")
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          activitiesByDate = data.data;
+          renderTabs();
+          renderActivities();
+
+          const alle = Object.values(activitiesByDate).flat();
+          const totalSeconds = alle.reduce((sum, a) => sum + a.duration, 0);
+          const fortschritt = berechneLevelFortschritt(totalSeconds);
+          zeigeFortschrittBalken(fortschritt);
+        } else {
+          activityList.innerHTML = "<p style='color: white;'>Fehler beim Laden</p>";
+        }
+      })
+      .catch(err => {
+        console.error("Fehler beim Laden:", err);
+        activityList.innerHTML = "<p style='color: white;'>Verbindungsfehler</p>";
+      });
   </script>
 </body>
 </html>
