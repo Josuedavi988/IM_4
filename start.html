@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
+
 <body>
   <div class="container" style="background-color: #4a5d80; padding: 16px; position: relative;">
     <a href="profile.html" class="profile-icon">
@@ -26,7 +28,8 @@
     <div class="weekday-tabs">
       <button class="weekday-tab"><span class="weekday-day">Mon</span><span class="weekday-date">20</span></button>
       <button class="weekday-tab"><span class="weekday-day">Tues</span><span class="weekday-date">21</span></button>
-      <button class="weekday-tab active"><span class="weekday-day">Wed</span><span class="weekday-date">22</span></button>
+      <button class="weekday-tab active"><span class="weekday-day">Wed</span><span
+          class="weekday-date">22</span></button>
       <button class="weekday-tab"><span class="weekday-day">Thu</span><span class="weekday-date">23</span></button>
       <button class="weekday-tab"><span class="weekday-day">Fri</span><span class="weekday-date">24</span></button>
       <button class="weekday-tab"><span class="weekday-day">Sat</span><span class="weekday-date">25</span></button>
@@ -87,7 +90,8 @@
     });
 
     // ✅ Level dynamisch laden
-    fetch("api/get-level.php")
+    // ✅ Level dynamisch laden
+    fetch("system/api/get-level.php")
       .then(res => res.json())
       .then(data => {
         if (data.status === "success") {
@@ -97,6 +101,8 @@
       .catch(err => {
         console.error("Fehler beim Laden des Levels:", err);
       });
+
   </script>
 </body>
+
 </html>

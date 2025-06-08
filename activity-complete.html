@@ -9,7 +9,6 @@
 </head>
 <body>
   <div class="container" style="background-color: #4a5d80; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 32px;">
-    
     <h1 class="logo" style="margin-bottom: 32px;">FitUp</h1>
 
     <div class="activity-complete-icon" style="margin-bottom: 32px;">
@@ -29,33 +28,36 @@
   </div>
 
   <script>
-    // Daten aus localStorage holen
     const sport = localStorage.getItem("selectedSport") || "Unbekannt";
     const timeString = localStorage.getItem("timerResult") || "ZEIT 00:00";
 
-    // Zeit in Sekunden umwandeln (von z.B. ZEIT 03:21)
     const parts = timeString.split(" ")[1].split(":");
     const durationInSeconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
 
-    // Einfaches Level-System: 1 Punkt pro 10 Sekunden
-    const level = Math.floor(durationInSeconds / 10);
+    const date = new Date().toISOString().split("T")[0];
 
-    // API-Aufruf zum Speichern
-    fetch("api/save-activity.php", {
+    fetch("system/api/save-activity.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
-        type: sport,
+        sport: sport,
         duration: durationInSeconds,
-        level: level
+        date: date
       })
     })
-    .then(res => res.json())
-    .then(data => {
-      console.log("Aktivität gespeichert:", data);
+    .then(async res => {
+      const text = await res.text();
+      try {
+        const json = JSON.parse(text);
+        console.log("Aktivität gespeichert:", json);
+      } catch (err) {
+        console.error("Fehlerhafte JSON-Antwort:", text);
+        alert("Fehler beim Speichern: Serverantwort ist ungültig.");
+      }
     })
     .catch(err => {
       console.error("Fehler beim Speichern der Aktivität:", err);
+      alert("Fehler beim Speichern:\n" + err.message);
     });
   </script>
 </body>
