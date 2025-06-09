@@ -13,11 +13,23 @@
     <div class="profile-header">
       <div class="profile-info">
         <h1 class="logo">FitUp</h1>
-        <h2 class="profile-name">Max Mustermann</h2>
-        <p class="profile-email">max.mustermann@mail.ch</p>
+          <p class="profile-email" id="profileEmail"></p>
       </div>
     </div>
-
+    <script>
+  fetch("system/api/get-user.php")
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        document.getElementById("profileEmail").textContent = data.data.email;
+      } else {
+        document.getElementById("profileEmail").textContent = "Nicht eingeloggt";
+      }
+    })
+    .catch(() => {
+      document.getElementById("profileEmail").textContent = "Fehler beim Laden";
+    });
+</script>
     <div class="profile-body">
 
       <button class="profile-menu-item" onclick="window.location.href='calendar.html'">
