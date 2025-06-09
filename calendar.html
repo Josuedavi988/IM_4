@@ -8,157 +8,165 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <div class="container" style="background-color: #4a5d80; padding: 16px;">
+  <div class="container" style="background-color: #4a5d80; padding: 16px; max-width: 400px; margin: auto;">
 
-    <!-- Fortschrittsbalken ganz oben -->
-    <div id="level-progress-bar" style="margin-bottom: 24px;"></div>
-
-    <div class="header">
-      <h1 class="logo">FitUp</h1>
-      <a href="profile.html" class="profile-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-      </a>
+    <div id="levelInfo" style="color: white; text-align: center; margin-bottom: 8px;"></div>
+    <div style="background-color: #334155; border-radius: 9999px; overflow: hidden; height: 8px; margin-bottom: 16px;">
+      <div id="levelBar" style="background-color: #22c55e; height: 100%; width: 0%; transition: width 0.3s;"></div>
     </div>
 
-    <div class="weekday-tabs" id="weekdayTabs"></div>
-    <div class="activity-list" id="activityList"></div>
+    <div class="header" style="text-align: center;">
+      <h1 class="logo">FitUp</h1>
+      <div id="monthDisplay" style="color: white; margin-bottom: 8px;"></div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <button id="prevWeek">←</button>
+      <div id="weekdayTabs" style="display: flex; justify-content: space-between; flex-grow: 1; gap: 4px;"></div>
+      <button id="nextWeek">→</button>
+    </div>
+
+    <div class="activity-list" id="activityList" style="margin-top: 16px;"></div>
+
     <a href="start.html" class="button" style="margin-top: 24px;">zurück</a>
   </div>
 
   <script>
+    const levelInfo = document.getElementById("levelInfo");
+    const levelBar = document.getElementById("levelBar");
     const weekdayTabs = document.getElementById("weekdayTabs");
     const activityList = document.getElementById("activityList");
-    const progressBarDiv = document.getElementById("level-progress-bar");
+    const monthDisplay = document.getElementById("monthDisplay");
+    const prevWeekBtn = document.getElementById("prevWeek");
+    const nextWeekBtn = document.getElementById("nextWeek");
 
-    // Heute + 5 Tage
-    const days = [];
-    const today = new Date();
-    for (let i = 0; i < 6; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      days.push(date);
+    let activitiesByDate = {};
+    let totalScore = 0;
+    let selectedDate = new Date();
+    let currentWeekOffset = 0;
+
+    const emojis = {
+      "Laufen": "👟",
+      "Radfahren": "🚴",
+      "Krafttraining": "🏋️",
+      "Yoga": "🧘",
+      "Laufband": "🏃",
+      "Rudern": "🚣"
+    };
+
+    function getWeekDates(baseDate) {
+      const dates = [];
+      const monday = new Date(baseDate);
+      monday.setDate(baseDate.getDate() - ((baseDate.getDay() + 6) % 7)); // Montag als Start
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        dates.push(d);
+      }
+      return dates;
     }
 
-    let selectedDate = days[0].toISOString().split("T")[0];
+    function formatDate(date) {
+      return date.toISOString().split("T")[0];
+    }
 
     function renderTabs() {
       weekdayTabs.innerHTML = "";
-      days.forEach((date, index) => {
-        const dayName = date.toLocaleDateString("de-CH", { weekday: "short" });
-        const dayNumber = date.getDate();
-        const dateString = date.toISOString().split("T")[0];
+      const weekDates = getWeekDates(new Date(selectedDate));
+      const todayStr = formatDate(new Date());
+
+      monthDisplay.textContent = weekDates[0].toLocaleDateString("de-DE", { month: "long", year: "numeric" });
+
+      weekDates.forEach(date => {
+        const dateStr = formatDate(date);
+        const dayName = date.toLocaleDateString("de-DE", { weekday: "short" });
+        const dayNum = date.getDate();
 
         const btn = document.createElement("button");
-        btn.className = "weekday-tab" + (index === 0 ? " active" : "");
-        btn.innerHTML = `<span class="weekday-day">${dayName}</span><span class="weekday-date">${dayNumber}</span>`;
+        btn.className = "weekday-tab";
+        btn.style.padding = "6px 8px";
+        btn.style.borderRadius = "8px";
+        btn.style.border = (dateStr === todayStr) ? "2px solid #22c55e" : "none";
+        btn.style.background = (dateStr === formatDate(selectedDate)) ? "#ef4444" : "#475569";
+        btn.style.color = "white";
+        btn.innerHTML = `<div>${dayName}</div><div>${dayNum}</div>`;
         btn.addEventListener("click", () => {
-          document.querySelectorAll(".weekday-tab").forEach(t => t.classList.remove("active"));
-          btn.classList.add("active");
-          selectedDate = dateString;
+          selectedDate = date;
+          renderTabs();
           renderActivities();
         });
         weekdayTabs.appendChild(btn);
       });
     }
 
-    let activitiesByDate = {};
-
     function renderActivities() {
-      activityList.innerHTML = "";
-      const activities = activitiesByDate[selectedDate] || [];
-      if (activities.length === 0) {
-        activityList.innerHTML = "<p style='color: white; text-align: center;'>Keine Aktivitäten</p>";
-        return;
-      }
+      const dateStr = formatDate(selectedDate);
+      const activities = activitiesByDate[dateStr] || [];
+      activityList.innerHTML = activities.length === 0
+        ? "<p style='color: white; text-align: center;'>Keine Aktivitäten</p>"
+        : "";
 
-      activities.forEach(activity => {
-        const minuten = Math.floor(activity.duration / 60);
-        const sekunden = activity.duration % 60;
-        const score = Math.floor(activity.duration / 10);
+      activities.forEach(a => {
+        const minutes = Math.floor(a.duration / 60);
+        const seconds = a.duration % 60;
+        const score = Math.floor(a.duration / 10);
+        const emoji = emojis[a.type] || "🏃";
 
         const div = document.createElement("div");
         div.className = "activity-item";
-        div.style.display = "flex";
-        div.style.alignItems = "center";
-        div.style.backgroundColor = "#334155";
-        div.style.borderRadius = "12px";
-        div.style.padding = "12px";
         div.style.marginBottom = "12px";
         div.style.color = "white";
-
         div.innerHTML = `
-          <div class="activity-icon" style="margin-right: 12px;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 6v6l4 2" />
-            </svg>
-          </div>
-          <div class="activity-details">
-            <div class="activity-title" style="font-weight: bold;">${activity.type}</div>
-            <div class="activity-info">${minuten} min ${sekunden} sek</div>
-            <div class="activity-info">Score: ${score}</div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="font-size: 20px;">${emoji}</div>
+            <div>
+              <div>${a.type}</div>
+              <div style="font-size: 12px;">${minutes} min ${seconds} sek</div>
+              <div style="font-size: 12px;">Score: ${score}</div>
+            </div>
           </div>
         `;
         activityList.appendChild(div);
       });
     }
 
-    function berechneLevelFortschritt(totalSeconds) {
+    function renderLevelBar(score) {
       let level = 0;
-      let requiredScore = 360; // 360 Sekunden = Score 36
-      let nextLevelScore = 360;
-      let totalScore = Math.floor(totalSeconds / 10);
+      let required = 0;
+      let nextLevelReq = 60;
 
-      while (totalScore >= requiredScore) {
+      while (score >= required + nextLevelReq) {
         level++;
-        nextLevelScore = Math.floor(nextLevelScore * 1.5);
-        requiredScore += nextLevelScore;
+        required += nextLevelReq;
+        nextLevelReq = Math.floor(nextLevelReq * 1.5);
       }
 
-      const restScore = totalScore - (requiredScore - nextLevelScore);
-      const progress = Math.floor((restScore / nextLevelScore) * 100);
-      const fehltScore = nextLevelScore - restScore;
-
-      return {
-        level,
-        progress,
-        fehltScore,
-        totalScore
-      };
+      const progress = Math.min(100, ((score - required) / nextLevelReq) * 100);
+      levelInfo.innerHTML = `Level ${level} – noch ${nextLevelReq - (score - required)} Punkte bis Level ${level + 1}`;
+      levelBar.style.width = `${progress}%`;
     }
 
-    function zeigeFortschrittBalken(fortschritt) {
-      progressBarDiv.innerHTML = `
-        <div style="color: white; font-weight: bold; text-align: center;">Level: ${fortschritt.level}</div>
-        <div style="color: white; text-align: center;">Noch ${fortschritt.fehltScore} Punkte bis Level ${fortschritt.level + 1}</div>
-        <div style="background: #334155; height: 12px; border-radius: 6px; margin: 8px 24px; overflow: hidden;">
-          <div style="height: 100%; width: ${fortschritt.progress}%; background: #38bdf8;"></div>
-        </div>
-      `;
-    }
+    prevWeekBtn.onclick = () => {
+      selectedDate.setDate(selectedDate.getDate() - 7);
+      renderTabs();
+      renderActivities();
+    };
+    nextWeekBtn.onclick = () => {
+      selectedDate.setDate(selectedDate.getDate() + 7);
+      renderTabs();
+      renderActivities();
+    };
 
     fetch("system/api/get-activities.php")
       .then(res => res.json())
       .then(data => {
         if (data.status === "success") {
           activitiesByDate = data.data;
+          totalScore = Object.values(data.data).flat().reduce((sum, a) => sum + Math.floor(a.duration / 10), 0);
+          renderLevelBar(totalScore);
           renderTabs();
           renderActivities();
-
-          const alle = Object.values(activitiesByDate).flat();
-          const totalSeconds = alle.reduce((sum, a) => sum + a.duration, 0);
-          const fortschritt = berechneLevelFortschritt(totalSeconds);
-          zeigeFortschrittBalken(fortschritt);
-        } else {
-          activityList.innerHTML = "<p style='color: white;'>Fehler beim Laden</p>";
         }
-      })
-      .catch(err => {
-        console.error("Fehler beim Laden:", err);
-        activityList.innerHTML = "<p style='color: white;'>Verbindungsfehler</p>";
       });
   </script>
 </body>

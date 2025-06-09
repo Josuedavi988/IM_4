@@ -26,39 +26,5 @@
 
     <a href="calendar.html" class="button" style="width: 192px; margin-top: 32px;">beenden</a>
   </div>
-
-  <script>
-    const sport = localStorage.getItem("selectedSport") || "Unbekannt";
-    const timeString = localStorage.getItem("timerResult") || "ZEIT 00:00";
-
-    const parts = timeString.split(" ")[1].split(":");
-    const durationInSeconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-
-    const date = new Date().toISOString().split("T")[0];
-
-    fetch("system/api/save-activity.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        sport: sport,
-        duration: durationInSeconds,
-        date: date
-      })
-    })
-    .then(async res => {
-      const text = await res.text();
-      try {
-        const json = JSON.parse(text);
-        console.log("Aktivität gespeichert:", json);
-      } catch (err) {
-        console.error("Fehlerhafte JSON-Antwort:", text);
-        alert("Fehler beim Speichern: Serverantwort ist ungültig.");
-      }
-    })
-    .catch(err => {
-      console.error("Fehler beim Speichern der Aktivität:", err);
-      alert("Fehler beim Speichern:\n" + err.message);
-    });
-  </script>
 </body>
 </html>

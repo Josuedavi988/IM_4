@@ -1,108 +1,163 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FitUp – Start</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
 </head>
-
 <body>
-  <div class="container" style="background-color: #4a5d80; padding: 16px; position: relative;">
-    <a href="profile.html" class="profile-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-    </a>
+  <div class="container">
 
-    <h1 class="logo">FitUp</h1>
-
-    <div class="level-indicator" id="levelIndicator">Level wird geladen...</div>
-    <div class="progress-bar">
-      <div class="progress-bar-inner" id="progressBar"></div>
+    <!-- Header -->
+    <div class="header-bar">
+      <h1 class="logo">FitUp</h1>
+      <a href="profile.html" class="profile-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </a>
     </div>
 
-    <div class="weekday-tabs">
-      <button class="weekday-tab"><span class="weekday-day">Mon</span><span class="weekday-date">20</span></button>
-      <button class="weekday-tab"><span class="weekday-day">Tues</span><span class="weekday-date">21</span></button>
-      <button class="weekday-tab active"><span class="weekday-day">Wed</span><span
-          class="weekday-date">22</span></button>
-      <button class="weekday-tab"><span class="weekday-day">Thu</span><span class="weekday-date">23</span></button>
-      <button class="weekday-tab"><span class="weekday-day">Fri</span><span class="weekday-date">24</span></button>
-      <button class="weekday-tab"><span class="weekday-day">Sat</span><span class="weekday-date">25</span></button>
+    <!-- Level-Anzeige -->
+    <div class="level-display">
+      <div class="level-number" id="levelNumber">Level 0</div>
+      <div class="level-score" id="levelScore">0 / 60 Pkt</div>
+      <div class="progress-bar">
+        <div id="levelBar" class="progress-bar-inner"></div>
+      </div>
     </div>
 
     <div class="timer" id="timer">ZEIT 00:00</div>
-    <div class="selected-sport" id="selectedSport">Sportart: –</div>
+    <div class="selected-sport" id="sportDisplay">Sportart: -</div>
 
-    <a href="#" class="big-button" id="startButton">
-      <div class="big-button-inner" id="startButtonText">START</div>
-    </a>
+    <div class="big-button" id="startButton">
+      <div class="big-button-inner" id="startButtonInner">START</div>
+    </div>
 
     <a href="sports.html" class="button">Sportart wählen</a>
   </div>
 
   <script>
-    let timerInterval;
-    let seconds = 0;
+    let startTime = null;
+    let timerInterval = null;
     let isRunning = false;
-    const timer = document.getElementById("timer");
-    const progressBar = document.getElementById("progressBar");
-    const selectedSport = document.getElementById("selectedSport");
-    const startBtn = document.getElementById("startButton");
-    const startText = document.getElementById("startButtonText");
+    let hasSaved = false;
 
-    // Sportart anzeigen
-    const sport = localStorage.getItem("selectedSport");
-    if (sport) {
-      selectedSport.textContent = "Sportart: " + sport;
+    if (!localStorage.getItem("selectedSport")) {
+      localStorage.removeItem("selectedSport");
     }
 
-    // Start/Stop Button
-    startBtn.addEventListener("click", () => {
+    let selectedSport = localStorage.getItem("selectedSport") || "";
+
+    const timerDisplay = document.getElementById("timer");
+    const sportDisplay = document.getElementById("sportDisplay");
+    const startButton = document.getElementById("startButtonInner");
+    const levelNumber = document.getElementById("levelNumber");
+    const levelScore = document.getElementById("levelScore");
+    const levelBar = document.getElementById("levelBar");
+
+    function updateTimerDisplay(seconds) {
+      const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const secs = String(seconds % 60).padStart(2, '0');
+      timerDisplay.textContent = `ZEIT ${mins}:${secs}`;
+    }
+
+    function renderLevelBar(score) {
+      let level = 0;
+      let required = 0;
+      let nextLevel = 60;
+
+      while (score >= required + nextLevel) {
+        level++;
+        required += nextLevel;
+        nextLevel = Math.floor(nextLevel * 1.5);
+      }
+
+      const currentProgress = score - required;
+      const progress = Math.min(100, (currentProgress / nextLevel) * 100);
+
+      levelNumber.textContent = `Level ${level}`;
+      levelScore.textContent = `${currentProgress} / ${nextLevel} Pkt`;
+      levelBar.style.width = `${Math.max(progress, 2)}%`;
+    }
+
+    function loadLevelData() {
+      fetch("system/api/get-activities.php")
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "success") {
+            const allActivities = Object.values(data.data).flat();
+            const totalScore = allActivities.reduce((sum, a) => sum + Math.floor(a.duration / 10), 0);
+            renderLevelBar(totalScore);
+          } else {
+            levelScore.textContent = "Fehler beim Laden";
+          }
+        })
+        .catch(() => {
+          levelScore.textContent = "Verbindungsfehler";
+        });
+    }
+
+    startButton.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      if (!selectedSport) {
+        alert("Bitte zuerst eine Sportart wählen!");
+        return;
+      }
+
       if (!isRunning) {
-        startText.textContent = "STOP";
         isRunning = true;
+        hasSaved = false;
+        startTime = Date.now();
+        startButton.textContent = "STOP";
+
         timerInterval = setInterval(() => {
-          seconds++;
-          const min = String(Math.floor(seconds / 60)).padStart(2, "0");
-          const sec = String(seconds % 60).padStart(2, "0");
-          timer.textContent = `ZEIT ${min}:${sec}`;
-          progressBar.style.width = `${Math.min(seconds * 0.5, 100)}%`;
+          const seconds = Math.floor((Date.now() - startTime) / 1000);
+          updateTimerDisplay(seconds);
         }, 1000);
       } else {
+        const totalSeconds = Math.floor((Date.now() - startTime) / 1000);
         clearInterval(timerInterval);
-        localStorage.setItem("timerResult", timer.textContent);
-        window.location.href = "activity-complete.html";
+        isRunning = false;
+        startButton.textContent = "START";
+
+        if (!hasSaved && totalSeconds > 0 && startTime !== null) {
+          hasSaved = true;
+          startTime = null;
+
+          fetch("system/api/save-activity.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+              sport: selectedSport,
+              duration: totalSeconds
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === "success") {
+              window.location.href = "activity-complete.html";
+            } else {
+              alert("Fehler beim Speichern");
+            }
+          })
+          .catch(() => {
+            alert("Fehler beim Speichern");
+          });
+        }
       }
     });
 
-    // Wochentags-Tabs
-    const weekdayTabs = document.querySelectorAll('.weekday-tab');
-    weekdayTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        weekdayTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-      });
-    });
+    if (selectedSport) {
+      sportDisplay.textContent = "Sportart: " + selectedSport;
+    }
 
-    // ✅ Level dynamisch laden
-    // ✅ Level dynamisch laden
-    fetch("system/api/get-level.php")
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") {
-          document.getElementById("levelIndicator").textContent = "Level: " + data.level;
-        }
-      })
-      .catch(err => {
-        console.error("Fehler beim Laden des Levels:", err);
-      });
-
+    updateTimerDisplay(0);
+    loadLevelData();
   </script>
 </body>
-
 </html>

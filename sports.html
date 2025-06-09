@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FitUp – Sportart wählen</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div class="container" style="background-color: #4a5d80; padding: 16px;">
-
+    
     <div class="header">
       <h1 class="logo">FitUp</h1>
       <a href="profile.html" class="profile-icon">
@@ -23,22 +23,39 @@
     <div class="sport-selection-title">WÄHLE DEINE SPORTART!</div>
 
     <div class="sport-grid">
-      <button class="sport-item" data-sport="Laufen">👟<div class="sport-name">Laufen</div></button>
-      <button class="sport-item" data-sport="Radfahren">🚴‍♂️<div class="sport-name">Radfahren</div></button>
-      <button class="sport-item" data-sport="Krafttraining">🏋️‍♂️<div class="sport-name">Krafttraining</div></button>
-      <button class="sport-item" data-sport="Yoga">🧘‍♂️<div class="sport-name">Yoga</div></button>
-      <button class="sport-item" data-sport="Laufband">🏃‍♀️<div class="sport-name">Laufband</div></button>
-      <button class="sport-item" data-sport="Rudern">🚣‍♂️<div class="sport-name">Rudern</div></button>
+      <button class="sport-item" data-sport="Laufen">
+        <div class="sport-icon">👟</div>
+        <div class="sport-name">Laufen</div>
+      </button>
+      <button class="sport-item" data-sport="Radfahren">
+        <div class="sport-icon">🚴</div>
+        <div class="sport-name">Radfahren</div>
+      </button>
+      <button class="sport-item" data-sport="Krafttraining">
+        <div class="sport-icon">🏋️</div>
+        <div class="sport-name">Krafttraining</div>
+      </button>
+      <button class="sport-item" data-sport="Yoga">
+        <div class="sport-icon">🧘</div>
+        <div class="sport-name">Yoga</div>
+      </button>
+      <button class="sport-item" data-sport="Laufband">
+        <div class="sport-icon">🏃</div>
+        <div class="sport-name">Laufband</div>
+      </button>
+      <button class="sport-item" data-sport="Rudern">
+        <div class="sport-icon">🚣</div>
+        <div class="sport-name">Rudern</div>
+      </button>
     </div>
 
-    <a href="start.html" class="button">zurück</a>
+    <a href="start.html" class="button" style="margin-top: 24px;">zurück</a>
   </div>
 
   <script>
-    const sportItems = document.querySelectorAll('.sport-item');
-    sportItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const sport = item.getAttribute('data-sport');
+    document.querySelectorAll(".sport-item").forEach(item => {
+      item.addEventListener("click", () => {
+        const sport = item.getAttribute("data-sport");
         localStorage.setItem("selectedSport", sport);
         window.location.href = "start.html";
       });
