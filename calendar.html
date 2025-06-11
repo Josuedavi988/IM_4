@@ -7,6 +7,14 @@
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
   <style>
+    .kalender-box {
+      background-color: #4a5d80;
+      border-radius: 12px;
+      padding: 16px;
+      max-width: 480px;
+      margin: 40px auto;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
     @media (max-width: 400px) {
       .logo {
         font-size: 24px;
@@ -26,8 +34,7 @@
   </style>
 </head>
 <body>
-  <div class="container" style="background-color: #4a5d80; padding: 16px; max-width: 400px; margin: auto;">
-
+  <div class="kalender-box">
     <div class="header" style="text-align: center;">
       <h1 class="logo">FitUp</h1>
     </div>
@@ -44,13 +51,12 @@
     </div>
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-      <button id="prevWeek" style="background-color: #334155; color: white; border: none; padding: 8px; border-radius: 50%; cursor: pointer;">←</button>
+      <button id="prevWeek" style="background-color: #334155; color: white; border: none; padding: 8px; border-radius: 50%; cursor: pointer;">&larr;</button>
       <div id="weekdayTabs" style="display: flex; justify-content: space-between; flex-grow: 1; gap: 4px; padding: 0 8px;"></div>
-      <button id="nextWeek" style="background-color: #334155; color: white; border: none; padding: 8px; border-radius: 50%; cursor: pointer;">→</button>
+      <button id="nextWeek" style="background-color: #334155; color: white; border: none; padding: 8px; border-radius: 50%; cursor: pointer;">&rarr;</button>
     </div>
 
     <div class="activity-list" id="activityList" style="margin-top: 16px;"></div>
-
     <a href="start.html" class="button" style="margin-top: 24px;">zurück</a>
   </div>
 
@@ -66,15 +72,14 @@
     let activitiesByDate = {};
     let totalScore = 0;
     let selectedDate = new Date();
-    let currentWeekOffset = 0;
 
     const emojis = {
-      "Laufen": "👟",
+      "Laufen": "🍟",
       "Radfahren": "🚴",
       "Krafttraining": "🏋️",
       "Yoga": "🧘",
       "Laufband": "🏃",
-      "Rudern": "🚣"
+      "Rudern": "🛳"
     };
 
     function getWeekDates(baseDate) {
