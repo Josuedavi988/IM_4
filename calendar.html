@@ -10,20 +10,25 @@
 <body>
   <div class="container" style="background-color: #4a5d80; padding: 16px; max-width: 400px; margin: auto;">
 
-    <div id="levelInfo" style="color: white; text-align: center; margin-bottom: 8px;"></div>
-    <div style="background-color: #334155; border-radius: 9999px; overflow: hidden; height: 8px; margin-bottom: 16px;">
-      <div id="levelBar" style="background-color: #22c55e; height: 100%; width: 0%; transition: width 0.3s;"></div>
-    </div>
-
     <div class="header" style="text-align: center;">
       <h1 class="logo">FitUp</h1>
-      <div id="monthDisplay" style="color: white; margin-bottom: 8px;"></div>
+    </div>
+
+    <div id="levelInfo" style="color: white; text-align: center; margin-bottom: 4px; font-weight: 700;"></div>
+    <div style="background-color: #1e293b; border-radius: 9999px; overflow: hidden; height: 16px; margin-bottom: 16px; border: 1px solid white;">
+      <div id="levelBar" style="background-color: #fce7f3; height: 100%; width: 0%; transition: width 0.3s;"></div>
     </div>
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-      <button id="prevWeek">←</button>
-      <div id="weekdayTabs" style="display: flex; justify-content: space-between; flex-grow: 1; gap: 4px;"></div>
-      <button id="nextWeek">→</button>
+      <span></span>
+      <div id="monthDisplay" style="color: white; font-weight: 500;">Monat</div>
+      <span></span>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <button id="prevWeek" style="background-color: #334155; color: white; border: none; padding: 8px; border-radius: 50%; cursor: pointer;">←</button>
+      <div id="weekdayTabs" style="display: flex; justify-content: space-between; flex-grow: 1; gap: 4px; padding: 0 8px;"></div>
+      <button id="nextWeek" style="background-color: #334155; color: white; border: none; padding: 8px; border-radius: 50%; cursor: pointer;">→</button>
     </div>
 
     <div class="activity-list" id="activityList" style="margin-top: 16px;"></div>
@@ -57,7 +62,7 @@
     function getWeekDates(baseDate) {
       const dates = [];
       const monday = new Date(baseDate);
-      monday.setDate(baseDate.getDate() - ((baseDate.getDay() + 6) % 7)); // Montag als Start
+      monday.setDate(baseDate.getDate() - ((baseDate.getDay() + 6) % 7));
       for (let i = 0; i < 7; i++) {
         const d = new Date(monday);
         d.setDate(monday.getDate() + i);
@@ -89,6 +94,7 @@
         btn.style.border = (dateStr === todayStr) ? "2px solid #22c55e" : "none";
         btn.style.background = (dateStr === formatDate(selectedDate)) ? "#ef4444" : "#475569";
         btn.style.color = "white";
+        btn.style.width = "40px";
         btn.innerHTML = `<div>${dayName}</div><div>${dayNum}</div>`;
         btn.addEventListener("click", () => {
           selectedDate = date;
@@ -142,7 +148,7 @@
       }
 
       const progress = Math.min(100, ((score - required) / nextLevelReq) * 100);
-      levelInfo.innerHTML = `Level ${level} – noch ${nextLevelReq - (score - required)} Punkte bis Level ${level + 1}`;
+      levelInfo.innerHTML = `Level ${level}<br>${score - required} / ${nextLevelReq} Pkt`;
       levelBar.style.width = `${progress}%`;
     }
 
