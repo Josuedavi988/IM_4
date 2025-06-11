@@ -6,10 +6,33 @@
   <title>FitUp – Sportart wählen</title>
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    .sport-page {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px;
+      background-color: #4a5d80;
+      min-height: 100vh;
+    }
+
+    @media (max-width: 768px) {
+      .sport-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      }
+
+      .sport-icon {
+        font-size: 20px;
+      }
+
+      .sport-name {
+        font-size: 13px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container" style="background-color: #4a5d80; padding: 16px;">
-    
+  <div class="container sport-page">
+
     <div class="header">
       <h1 class="logo">FitUp</h1>
       <a href="profile.html" class="profile-icon">
@@ -24,7 +47,7 @@
 
     <div class="sport-grid">
       <button class="sport-item" data-sport="Laufen">
-        <div class="sport-icon">👟</div>
+        <div class="sport-icon">🏃</div>
         <div class="sport-name">Laufen</div>
       </button>
       <button class="sport-item" data-sport="Radfahren">
